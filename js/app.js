@@ -1,24 +1,26 @@
 'use strict';
 
-// const productContainer = document.getElementById('products');
-// const reportContainer = document.getElementById('report');
+/////////////////////////////////
+// GLOBAL SCOPE
+////////////////////////////////
 
 const ulElem = document.querySelector('ul');
 const sectionElem = document.getElementById('resultsHeader');
 const button = document.getElementById('showResults');
-button.style.display = 'none'; // hide button until results are ready
 
-const leftProductImage = document.querySelector('section img:first-child');
+
 // querySelectorAll = list of elements
 // querySelector = 1 element
+// could also use document.getElementById
+const leftProductImage = document.querySelector('section img:first-child');
 const middleProductImage = document.querySelector('section img:nth-child(2)');
 const rightProductImage = document.querySelector('section img:nth-child(3)');
-let workingProducts = [];
-const allProducts = [];
+const allProductNames = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun', 'unicorn', 'water-can', 'wine-glass'];
+
 let leftProductInstance = null;
 let middleProductInstance = null;
 let rightProductInstance = null;
-let clickCount = 0;
+let clickCount = 0; // running total of votes
 const maxClicks = 25; // max number of votes
 
 
@@ -29,46 +31,20 @@ function Product(name, src) {
   this.views = 0;
   this.clicks = 0;
 }
+Product.allProducts = []; // property of construction itself
+Product.workingProducts = [];
 
-let bag = new Product('bag', './img/bag.jpg');
-let banana = new Product('banana', './img/banana.jpg');
-let bathroom = new Product('bathroom', './img/bathroom.jpg');
-let boots = new Product('boots', './img/boots.jpg');
-let breakfast = new Product('breakfast', './img/breakfast.jpg');
-let bubblegum = new Product('bubblegum', './img/bubblegum.jpg');
-let chair = new Product('chair', './img/chair.jpg');
-let cthulhu = new Product('cthulhu', './img/cthulhu.jpg');
-let dogDuck = new Product('dog-duck', './img/dog-duck.jpg');
-let dragon = new Product('dragon', './img/dragon.jpg');
-let pen = new Product('pen', './img/pen.jpg');
-let petSweep = new Product('pet-sweep', './img/pet-sweep.jpg');
-let scissors = new Product('scissors', './img/scissors.jpg');
-let shark = new Product('shark', './img/shark.jpg');
-let sweep = new Product('sweep', './img/sweep.png');
-let tauntaun = new Product('tauntaun', './img/tauntaun.jpg');
-let unicorn = new Product('unicorn', './img/unicorn.jpg');
-let waterCan = new Product('water-can', './img/water-can.jpg');
-let wineGlass = new Product('wine-glass', './img/wine-glass.jpg');
+/////////////////////////
+// FUNCTIONS ///////////
 
-allProducts.push(bag);
-allProducts.push(banana);
-allProducts.push(bathroom);
-allProducts.push(boots);
-allProducts.push(breakfast);
-allProducts.push(bubblegum);
-allProducts.push(chair);
-allProducts.push(cthulhu);
-allProducts.push(dogDuck);
-allProducts.push(dragon);
-allProducts.push(pen);
-allProducts.push(petSweep);
-allProducts.push(scissors);
-allProducts.push(shark);
-allProducts.push(sweep);
-allProducts.push(tauntaun);
-allProducts.push(unicorn);
-allProducts.push(waterCan);
-allProducts.push(wineGlass);
+function initProducts() {
+  // for (let item of array) {}
+  for (let productName of allProductNames) {
+    const productInstance = new Product(productName, `img/${productName}.jpg`);
+    Product.allProducts.push(productInstance);
+  }
+}
+
 
 function renderProducts() {
   // check if click count has reached max
@@ -80,18 +56,19 @@ function renderProducts() {
     renderResultsButton();
   }
 
-  if (workingProducts.length <= 1) {
-    workingProducts = allProducts.slice(); // makes copy of all products array
-    shuffleArray(workingProducts);
+  if (Product.workingProducts.length < 3) {
+    Product.workingProducts = Product.allProducts.slice(); // makes copy of all products array; also copies the properties of the array including views and clicks
+    // if you don't have enough for the next round, this refreshes
+    shuffleArray(Product.workingProducts);
   }
 
-  leftProductInstance = workingProducts.pop(); // retrieves AND removes the last item
+  leftProductInstance = Product.workingProducts.pop(); // retrieves AND removes the last item
   leftProductImage.setAttribute('src', leftProductInstance.src);
 
-  middleProductInstance = workingProducts.pop();
+  middleProductInstance = Product.workingProducts.pop();
   middleProductImage.setAttribute('src', middleProductInstance.src);
 
-  rightProductInstance = workingProducts.pop();
+  rightProductInstance = Product.workingProducts.pop();
   rightProductImage.setAttribute('src', rightProductInstance.src);
 
   leftProductInstance.views += 1;
@@ -99,7 +76,13 @@ function renderProducts() {
   rightProductInstance.views += 1;
 }
 
-// helper function - randomize array
+///////////////////////////////////
+// HELPER FUNCTIONS  ///////////////
+
+
+
+//randomize array
+// Fisher Yates function via chatGPT
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1)); // Generate a random index from 0 to i
@@ -110,7 +93,7 @@ function shuffleArray(array) {
 function handleLeftClick() {
   leftProductInstance.clicks += 1;
   clickCount += 1;
-  console.log(leftProductInstance);
+  // console.log(leftProductInstance);
   renderProducts();
 }
 
@@ -126,11 +109,10 @@ function handleRightClick() {
   renderProducts();
 }
 
-// const sectionResultsElem = querySelector('h2');
 
 function renderResultsClick() {
-  for (let i = 0; i < allProducts.length; i++) {
-    let currentProduct = allProducts[i];
+  for (let i = 0; i < Product.allProducts.length; i++) {
+    let currentProduct = Product.allProducts[i];
     let result = `${currentProduct.name} had ${currentProduct.clicks} votes and was viewed ${currentProduct.views} times.`;
     // console.log(result);
     const liElem = document.createElement('li');
@@ -146,6 +128,7 @@ function setupListeners() {
   rightProductImage.addEventListener('click', handleRightClick);
 }
 
+// remove listeners
 function removeListener() {
   leftProductImage.removeEventListener('click', handleLeftClick);
   middleProductImage.removeEventListener('click', handleMiddleClick);
@@ -155,10 +138,55 @@ function removeListener() {
 function renderResultsButton() {
   button.addEventListener('click', renderResultsClick);
   button.style.display = 'block';
+  button.removeAttribute('hidden');
   const resultsHeaderElem = document.createElement('h2');
   sectionElem.appendChild(resultsHeaderElem);
   resultsHeaderElem.textContent = 'Results';
 }
 
+/////////////////////////
+// START APP ///////////
+
+initProducts();
 renderProducts();
 setupListeners();
+
+// let bag = new Product('bag', './img/bag.jpg');
+// let banana = new Product('banana', './img/banana.jpg');
+// let bathroom = new Product('bathroom', './img/bathroom.jpg');
+// let boots = new Product('boots', './img/boots.jpg');
+// let breakfast = new Product('breakfast', './img/breakfast.jpg');
+// let bubblegum = new Product('bubblegum', './img/bubblegum.jpg');
+// let chair = new Product('chair', './img/chair.jpg');
+// let cthulhu = new Product('cthulhu', './img/cthulhu.jpg');
+// let dogDuck = new Product('dog-duck', './img/dog-duck.jpg');
+// let dragon = new Product('dragon', './img/dragon.jpg');
+// let pen = new Product('pen', './img/pen.jpg');
+// let petSweep = new Product('pet-sweep', './img/pet-sweep.jpg');
+// let scissors = new Product('scissors', './img/scissors.jpg');
+// let shark = new Product('shark', './img/shark.jpg');
+// let sweep = new Product('sweep', './img/sweep.png');
+// let tauntaun = new Product('tauntaun', './img/tauntaun.jpg');
+// let unicorn = new Product('unicorn', './img/unicorn.jpg');
+// let waterCan = new Product('water-can', './img/water-can.jpg');
+// let wineGlass = new Product('wine-glass', './img/wine-glass.jpg');
+
+// allProducts.push(bag);
+// allProducts.push(banana);
+// allProducts.push(bathroom);
+// allProducts.push(boots);
+// allProducts.push(breakfast);
+// allProducts.push(bubblegum);
+// allProducts.push(chair);
+// allProducts.push(cthulhu);
+// allProducts.push(dogDuck);
+// allProducts.push(dragon);
+// allProducts.push(pen);
+// allProducts.push(petSweep);
+// allProducts.push(scissors);
+// allProducts.push(shark);
+// allProducts.push(sweep);
+// allProducts.push(tauntaun);
+// allProducts.push(unicorn);
+// allProducts.push(waterCan);
+// allProducts.push(wineGlass);
