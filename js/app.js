@@ -1,22 +1,24 @@
 'use strict';
 
-const productContainer = document.getElementById("products");
-const reportContainer = document.getElementById("report");
+// const productContainer = document.getElementById('products');
+// const reportContainer = document.getElementById('report');
+const button = document.getElementById('showResults');
+const ulElem = document.querySelector('ul');
 
-let workingProducts = [];
-const allProducts = [];
 const leftProductImage = document.querySelector('section img:first-child');
 // querySelectorAll = list of elements
 // querySelector = 1 element
 const middleProductImage = document.querySelector('section img:nth-child(2)');
 const rightProductImage = document.querySelector('section img:nth-child(3)');
+let workingProducts = [];
+const allProducts = [];
 let leftProductInstance = null;
 let middleProductInstance = null;
 let rightProductInstance = null;
 let clickCount = 0;
-const maxClicks = 4;
+const maxClicks = 25; // max number of votes
 
-// leftProductImage.setAttribute('src',
+
 
 function Product(name, src) {
   this.name = name;
@@ -65,7 +67,34 @@ allProducts.push(unicorn);
 allProducts.push(waterCan);
 allProducts.push(wineGlass);
 
-// console.log(allProducts);
+function renderProducts() {
+  // check if click count has reached max
+
+  if (clickCount >= maxClicks) {
+    // disable the images event handler
+    removeListener();
+    // show the button which would let you render the results
+    renderResultsButton();
+  }
+
+  if (workingProducts.length <= 1) {
+    workingProducts = allProducts.slice(); // makes copy of all products array
+    shuffleArray(workingProducts);
+  }
+
+  leftProductInstance = workingProducts.pop(); // retrieves AND removes the last item
+  leftProductImage.setAttribute('src', leftProductInstance.src);
+
+  middleProductInstance = workingProducts.pop();
+  middleProductImage.setAttribute('src', middleProductInstance.src);
+
+  rightProductInstance = workingProducts.pop();
+  rightProductImage.setAttribute('src', rightProductInstance.src);
+
+  leftProductInstance.views += 1;
+  middleProductInstance.views += 1;
+  rightProductInstance.views += 1;
+}
 
 // helper function - randomize array
 function shuffleArray(array) {
@@ -78,6 +107,7 @@ function shuffleArray(array) {
 function handleLeftClick() {
   leftProductInstance.clicks += 1;
   clickCount += 1;
+  console.log(leftProductInstance);
   renderProducts();
 }
 
@@ -93,30 +123,34 @@ function handleRightClick() {
   renderProducts();
 }
 
-leftProductImage.addEventListener('click', handleLeftClick);
-middleProductImage.addEventListener('click', handleMiddleClick);
-rightProductImage.addEventListener('click', handleRightClick);
-
-function renderProducts() {
-  if (workingProducts.length <= 1) {
-    workingProducts = allProducts.slice(); // makes copy of all products array
-    shuffleArray(workingProducts);
+function renderResultsClick() {
+  for (let i = 0; i < allProducts.length; i++) {
+    let currentProduct = allProducts[i];
+    let result = `${currentProduct.name} had ${currentProduct.clicks} votes and was viewed ${currentProduct.views} times.`;
+    console.log(result);
+    const liElem = document.createElement('li');
+    ulElem.appendChild(liElem);
+    liElem.textContent = result;
   }
-  leftProductInstance = workingProducts.pop(); // retrieves AND removes the last item
-  leftProductImage.setAttribute('src', leftProductInstance.src);
+}
 
-  middleProductInstance = workingProducts.pop();
-  middleProductImage.setAttribute('src', middleProductInstance.src);
+// setup listeners in callback
+function setupListeners() {
+  leftProductImage.addEventListener('click', handleLeftClick);
+  middleProductImage.addEventListener('click', handleMiddleClick);
+  rightProductImage.addEventListener('click', handleRightClick);
+  button.addEventListener('click', renderResultsClick);
+}
 
-  rightProductInstance = workingProducts.pop();
-  rightProductImage.setAttribute('src', rightProductInstance.src);
+function removeListener() {
+  leftProductImage.removeEventListener('click', handleLeftClick);
+  middleProductImage.removeEventListener('click', handleMiddleClick);
+  rightProductImage.removeEventListener('click', handleRightClick);
+}
 
-  leftProductInstance.views += 1;
-  middleProductInstance.views +=1;
-  rightProductInstance.views +=1;
+function renderResultsButton() {
+  button.style.display = 'block';
 }
 
 renderProducts();
-
-console.log(allProducts);
-console.log(clickCount);
+setupListeners();
