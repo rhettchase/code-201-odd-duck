@@ -66,6 +66,14 @@ body {
   align-items: center;
 }
 
+#resultsHeader {
+  display: flex;
+  flex-direction: column-reverse;
+  overflow: scroll;
+  max-height: 30rem;
+
+}
+
 /* Lists
 reference: skeleton
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
@@ -93,10 +101,10 @@ li {
   line-height: 1.6;
 }
 
-.results {
+/* .results {
   overflow: scroll;
   max-height: 25rem;
-}
+} */
 
 /* Button
 –––––––––––––––––––––––––––––––––––––––––––––––––– */

@@ -2,8 +2,11 @@
 
 // const productContainer = document.getElementById('products');
 // const reportContainer = document.getElementById('report');
-const button = document.getElementById('showResults');
+
 const ulElem = document.querySelector('ul');
+const sectionElem = document.getElementById('resultsHeader');
+const button = document.getElementById('showResults');
+button.style.display = 'none'; // hide button until results are ready
 
 const leftProductImage = document.querySelector('section img:first-child');
 // querySelectorAll = list of elements
@@ -16,7 +19,7 @@ let leftProductInstance = null;
 let middleProductInstance = null;
 let rightProductInstance = null;
 let clickCount = 0;
-const maxClicks = 25; // max number of votes
+const maxClicks = 4; // max number of votes
 
 
 
@@ -123,11 +126,13 @@ function handleRightClick() {
   renderProducts();
 }
 
+// const sectionResultsElem = querySelector('h2');
+
 function renderResultsClick() {
   for (let i = 0; i < allProducts.length; i++) {
     let currentProduct = allProducts[i];
     let result = `${currentProduct.name} had ${currentProduct.clicks} votes and was viewed ${currentProduct.views} times.`;
-    console.log(result);
+    // console.log(result);
     const liElem = document.createElement('li');
     ulElem.appendChild(liElem);
     liElem.textContent = result;
@@ -139,7 +144,6 @@ function setupListeners() {
   leftProductImage.addEventListener('click', handleLeftClick);
   middleProductImage.addEventListener('click', handleMiddleClick);
   rightProductImage.addEventListener('click', handleRightClick);
-  button.addEventListener('click', renderResultsClick);
 }
 
 function removeListener() {
@@ -149,7 +153,11 @@ function removeListener() {
 }
 
 function renderResultsButton() {
+  button.addEventListener('click', renderResultsClick);
   button.style.display = 'block';
+  const resultsHeaderElem = document.createElement('h2');
+  sectionElem.appendChild(resultsHeaderElem);
+  resultsHeaderElem.textContent = 'Results';
 }
 
 renderProducts();
