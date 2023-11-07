@@ -19,7 +19,7 @@ let leftProductInstance = null;
 let middleProductInstance = null;
 let rightProductInstance = null;
 let clickCount = 0;
-const maxClicks = 4; // max number of votes
+const maxClicks = 25; // max number of votes
 
 
 
