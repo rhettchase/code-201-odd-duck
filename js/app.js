@@ -4,8 +4,7 @@
 // GLOBAL SCOPE
 ////////////////////////////////
 
-const ulElem = document.querySelector('ul');
-const sectionElem = document.getElementById('resultsHeader');
+const sectionElem = document.getElementById('resultsContainer');
 const button = document.getElementById('showResults');
 
 // querySelectorAll = list of elements
@@ -67,15 +66,27 @@ function renderProducts() {
 
   if (clickCount >= maxClicks) {
     // disable the images event handler
-    removeListener();
+    removeVotingListener();
     // show the button which would let you render the results
     renderResultsButton();
+  }
+
+  // handle case of leftover
+  // reference: in-class demo
+  let leftOver = null;
+  if (Product.workingProducts.length === 1) {
+    leftOver = Product.workingProducts[0];
   }
 
   if (Product.workingProducts.length < 3) {
     Product.workingProducts = Product.allProducts.slice(); // makes copy of all products array; also copies the properties of the array including views and clicks
     // if you don't have enough for the next round, this refreshes
     shuffleArray(Product.workingProducts);
+
+    if (leftOver) {
+      removeItem(Product.workingProducts, leftOver);
+      Product.workingProducts.push(leftOver);
+    }
   }
 
   leftProductInstance = Product.workingProducts.pop(); // retrieves AND removes the last item
@@ -98,38 +109,32 @@ function renderChart() {
   let productViews = [];
 
   for (let i = 0; i < Product.allProducts.length; i++) {
-    productNames.push(Product.allProducts[i].name);
-    productVotes.push(Product.allProducts[i].clicks);
-    productViews.push(Product.allProducts[i].views);
+    let currentProduct = Product.allProducts[i];
+    productNames.push(currentProduct.name);
+    productVotes.push(currentProduct.clicks);
+    productViews.push(currentProduct.views);
   }
-  /* refer to Chart.js > Chart Types > Bar Chart:
-  https://www.chartjs.org/docs/latest/charts/bar.html
-  and refer to Chart.js > Getting Started > Getting Started:
-  https://www.chartjs.org/docs/latest/getting-started/ */
+
+  // refer to Chart.js
+  // https://www.chartjs.org/docs/latest/charts/bar.html
   const data = {
     labels: productNames,
-    datasets: [{
-      label: 'Votes',
-      data: productVotes,
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.2)'
-      ],
-      borderColor: [
-        'rgb(255, 99, 132)'
-      ],
-      borderWidth: 1
-    },
-    {
-      label: 'Views',
-      data: productViews,
-      backgroundColor: [
-        'rgba(255, 159, 64, 0.2)'
-      ],
-      borderColor: [
-        'rgb(255, 159, 64)'
-      ],
-      borderWidth: 1
-    }]
+    datasets: [
+      {
+        label: 'Votes',
+        data: productVotes,
+        backgroundColor: ['rgba(255, 128, 114, 0.2)'],
+        borderColor: ['rgb(255, 128, 114)'],
+        borderWidth: 1,
+      },
+      {
+        label: 'Views',
+        data: productViews,
+        backgroundColor: ['rgba(97, 113, 128, 0.2)'],
+        borderColor: ['rgb(97, 113, 128)'],
+        borderWidth: 1,
+      },
+    ],
   };
 
   const config = {
@@ -138,16 +143,14 @@ function renderChart() {
     options: {
       scales: {
         y: {
-          beginAtZero: true
-        }
-      }
+          beginAtZero: true,
+        },
+      },
     },
   };
-  let canvasChart = document.getElementById('myChart');
-  const myChart = new Chart(canvasChart, config);
+  const canvasChart = document.getElementById('myChart');
+  new Chart(canvasChart, config);
 }
-
-
 
 ///////////////////////////////////
 // HELPER FUNCTIONS  ///////////////
@@ -158,6 +161,14 @@ function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1)); // Generate a random index from 0 to i
     [array[i], array[j]] = [array[j], array[i]]; // Swap elements at i and j
+  }
+}
+
+// reference: class demo code
+function removeItem(array, item) {
+  const index = array.indexOf(item);
+  if (index !== -1) {
+    array.splice(index, 1);
   }
 }
 
@@ -182,18 +193,8 @@ function handleRightClick() {
 
 function handleViewResultsClick() {
   renderChart();
+  removeResultsListener(); // remove listener once button clicked once
 }
-
-// function renderResultsClick() {
-//   for (let i = 0; i < Product.allProducts.length; i++) {
-//     let currentProduct = Product.allProducts[i];
-//     let result = `${currentProduct.name} had ${currentProduct.clicks} votes and was viewed ${currentProduct.views} times.`;
-//     // console.log(result);
-//     const liElem = document.createElement('li');
-//     ulElem.appendChild(liElem);
-//     liElem.textContent = result;
-//   }
-// }
 
 // setup listeners in callback
 function setupListeners() {
@@ -203,11 +204,12 @@ function setupListeners() {
 }
 
 // remove listeners
-function removeListener() {
+function removeVotingListener() {
   leftProductImage.removeEventListener('click', handleLeftClick);
   middleProductImage.removeEventListener('click', handleMiddleClick);
   rightProductImage.removeEventListener('click', handleRightClick);
 }
+
 
 function renderResultsButton() {
   button.addEventListener('click', handleViewResultsClick);
@@ -218,9 +220,14 @@ function renderResultsButton() {
   resultsHeaderElem.textContent = 'Results';
 }
 
+function removeResultsListener() {
+  button.removeEventListener('click', handleViewResultsClick);
+}
+
 /////////////////////////
 // START APP ///////////
 
 initProducts();
 renderProducts();
 setupListeners();
+// removeResultsListener();
