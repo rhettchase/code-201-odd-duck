@@ -39,13 +39,14 @@ let leftProductInstance = null;
 let middleProductInstance = null;
 let rightProductInstance = null;
 let clickCount = 0; // running total of votes
-const maxClicks = 25; // max number of votes
+const maxClicks = 5; // max number of votes
+const productStorageKey = 'product-key';
 
-function Product(name, src) {
+function Product(name, src, views = 0, clicks = 0) {
   this.name = name;
   this.src = src;
-  this.views = 0;
-  this.clicks = 0;
+  this.views = views;
+  this.clicks = clicks;
 }
 Product.allProducts = []; // property of construction itself
 Product.workingProducts = [];
@@ -68,7 +69,7 @@ function renderProducts() {
     // disable the images event handler
     removeVotingListener();
     // show the button which would let you render the results
-    renderResultsButton();
+    endVotingRound();
   }
 
   // handle case of leftover
@@ -102,6 +103,102 @@ function renderProducts() {
   middleProductInstance.views += 1;
   rightProductInstance.views += 1;
 }
+
+/// CLICK FUNCTIONS
+
+function handleLeftClick() {
+  leftProductInstance.clicks += 1;
+  clickCount += 1;
+  // console.log(leftProductInstance);
+  renderProducts();
+}
+
+function handleMiddleClick() {
+  middleProductInstance.clicks += 1;
+  clickCount += 1;
+  renderProducts();
+}
+
+function handleRightClick() {
+  rightProductInstance.clicks += 1;
+  clickCount += 1;
+  renderProducts();
+}
+
+function handleViewResultsClick() {
+  renderChart();
+  removeResultsListener(); // remove listener once button clicked once
+}
+
+/// LISTENERS
+// setup image listeners in callback
+function setupVotingListeners() {
+  leftProductImage.addEventListener('click', handleLeftClick);
+  middleProductImage.addEventListener('click', handleMiddleClick);
+  rightProductImage.addEventListener('click', handleRightClick);
+}
+
+// remove listeners
+function removeVotingListener() {
+  leftProductImage.removeEventListener('click', handleLeftClick);
+  middleProductImage.removeEventListener('click', handleMiddleClick);
+  rightProductImage.removeEventListener('click', handleRightClick);
+}
+
+/// RESULTS
+function endVotingRound() {
+  // make view results button visible and clickable
+  button.addEventListener('click', handleViewResultsClick);
+  button.style.display = 'block';
+  button.removeAttribute('hidden');
+  const resultsHeaderElem = document.createElement('h2');
+  sectionElem.appendChild(resultsHeaderElem);
+  resultsHeaderElem.textContent = 'Results';
+
+  saveProductResults(); // save products results from this round of voting
+}
+
+function removeResultsListener() {
+  button.removeEventListener('click', handleViewResultsClick);
+}
+
+///// LOCAL STORAGE ////////////
+
+function saveProductResults() {
+  const productStorageText = JSON.stringify(Product.allProducts); // convert allProducts array of products to string
+  localStorage.setItem(productStorageKey, productStorageText); // set value of allProducts to the key
+}
+
+function parseStoredProducts(storageText) {
+  // restore from storage
+  const storedProductObjects = JSON.parse(storageText);
+
+  Product.allProducts.length = 0; // fail safe to reset products array to 0
+
+  for (let productObject of storedProductObjects) {
+    // console.log(productObject.views);
+    const currentProduct = new Product(
+      productObject.name,
+      productObject.src,
+      productObject.views,
+      productObject.clicks
+    );
+    Product.allProducts.push(currentProduct);
+  }
+  console.log(Product.allProducts);
+}
+
+function loadProducts() {
+  const productStorageText = localStorage.getItem(productStorageKey); // access stored product results data stored in the saveProductResults() function
+  console.log(productStorageText);
+  if (productStorageText) {
+    parseStoredProducts(productStorageText); // if there is stored results data, access it and parse it, if not, initiate products creation
+  } else {
+    initProducts();
+  }
+}
+
+/////// CHARTS ////////////////
 
 function renderChart() {
   let productNames = [];
@@ -154,6 +251,7 @@ function renderChart() {
 
 ///////////////////////////////////
 // HELPER FUNCTIONS  ///////////////
+///////////////////////////////////
 
 //randomize array
 // Fisher Yates function via chatGPT
@@ -172,62 +270,10 @@ function removeItem(array, item) {
   }
 }
 
-function handleLeftClick() {
-  leftProductInstance.clicks += 1;
-  clickCount += 1;
-  // console.log(leftProductInstance);
-  renderProducts();
-}
-
-function handleMiddleClick() {
-  middleProductInstance.clicks += 1;
-  clickCount += 1;
-  renderProducts();
-}
-
-function handleRightClick() {
-  rightProductInstance.clicks += 1;
-  clickCount += 1;
-  renderProducts();
-}
-
-function handleViewResultsClick() {
-  renderChart();
-  removeResultsListener(); // remove listener once button clicked once
-}
-
-// setup listeners in callback
-function setupListeners() {
-  leftProductImage.addEventListener('click', handleLeftClick);
-  middleProductImage.addEventListener('click', handleMiddleClick);
-  rightProductImage.addEventListener('click', handleRightClick);
-}
-
-// remove listeners
-function removeVotingListener() {
-  leftProductImage.removeEventListener('click', handleLeftClick);
-  middleProductImage.removeEventListener('click', handleMiddleClick);
-  rightProductImage.removeEventListener('click', handleRightClick);
-}
-
-
-function renderResultsButton() {
-  button.addEventListener('click', handleViewResultsClick);
-  button.style.display = 'block';
-  button.removeAttribute('hidden');
-  const resultsHeaderElem = document.createElement('h2');
-  sectionElem.appendChild(resultsHeaderElem);
-  resultsHeaderElem.textContent = 'Results';
-}
-
-function removeResultsListener() {
-  button.removeEventListener('click', handleViewResultsClick);
-}
-
 /////////////////////////
 // START APP ///////////
+///////////////////////
 
-initProducts();
+loadProducts();
 renderProducts();
-setupListeners();
-// removeResultsListener();
+setupVotingListeners();
