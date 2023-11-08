@@ -39,7 +39,7 @@ let leftProductInstance = null;
 let middleProductInstance = null;
 let rightProductInstance = null;
 let clickCount = 0; // running total of votes
-const maxClicks = 10; // max number of votes
+const maxClicks = 25; // max number of votes
 
 function Product(name, src) {
   this.name = name;
