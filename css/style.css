@@ -99,7 +99,7 @@ behavior is expected of them--*/
 #resultsContainer {
   display: flex;
   flex-direction: column-reverse;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   max-height: 30%;
   max-width: 70%;
