@@ -64,18 +64,51 @@ body {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  text-align: center; /* Center the content within .products */
 }
 
-#resultsHeader {
+/* This element will be a grid item, but also a flex container */
+/* .products section {
+  
+  background-color: rgba(211, 187, 176, 0.3);
+  grid-row-start: 2;
+  grid-row-end: 4;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+} */
+
+/* -- product images --*/
+.products img {
+  width: 460px;
+  max-height: 26rem;
+  /*-- aide accessiblity by preventing layout shift
+  by adding a transparent border when a border is
+  added in :hover styles --*/
+  border: 5px solid transparent;
+}
+/*-- add hover states so the user can tell what
+behavior is expected of them--*/
+/* .products img:hover {
+  border: 5px solid rosybrown;
+  cursor: pointer; */
+
+#resultsContainer {
   display: flex;
   flex-direction: column-reverse;
-  overflow: scroll;
-  max-height: 30rem;
-
+  justify-content: center;
+  align-items: center;
+  max-height: 30%;
+  max-width: 70%;
+  margin: 0;
+  height: 100vh; /* To center vertically within the viewport */
+  margin: 0 auto; /* Center horizontally within the available width */
 }
 
 /* Lists
-reference: skeleton
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 ul {
@@ -101,9 +134,8 @@ li {
   line-height: 1.6;
 }
 
-/* .results {
-  overflow: scroll;
-  max-height: 25rem;
+/* #myChart {
+  max-width: 80%;
 } */
 
 /* Button
@@ -119,6 +151,6 @@ button {
 }
 
 button:hover {
-  background-color: aqua;
+  background-color: salmon;
   color: black;
 }
