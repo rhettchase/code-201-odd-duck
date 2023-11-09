@@ -239,8 +239,11 @@ function renderChart() {
     data: data,
     options: {
       scales: {
+        x: {
+          stacked: true,
+        },
         y: {
-          beginAtZero: true,
+          stacked: true,
         },
       },
     },
