@@ -1,4 +1,4 @@
-# LAB - 12
+# LAB - 13
 
 ## Odd Duck
 
@@ -18,6 +18,8 @@ The app calculates the vote totals and number of views each product receives, an
 - [web.dev FlexBox](https://web.dev/learn/css/flexbox/)
 - [MDN - Arrays](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop)
 - [chart.JS](https://www.chartjs.org/docs/latest/getting-started/)
+- [Grid CSS-tricks](https://css-tricks.com/snippets/css/complete-guide-grid/#aa-grid-properties)
+- [Local Storage](https://www.smashingmagazine.com/2010/10/local-storage-and-how-to-use-it/)
 - ChatGPT
 
 ### Lighthouse Accessibility Report Score
@@ -35,3 +37,7 @@ The app calculates the vote totals and number of views each product receives, an
 - I refactored my code to make `Product.allProducts` and `Product.workingProducts` properties of the construction function itself
 - I created a bar chart that rendered when pressing the results button `EventListener`
 - I set up a function to remove the `EventListener` on the button once the results were rendered once
+- I updated my bar chart to a `stacked bar chart` to better visualize the proportion of votes per views for each product
+- I implemented local storage, allowing the data to persistently track totals between page refreshes
+  - To do this, I utilized `JSON.stringify()`, `JSON.parse()`, `localStorage.setItem` and `local.Storage.getItem` in several different functions called at different times
+- I updated the formatting to utilize the CSS grid. I experimented with different `Grid Containers` and `Grid Items` and used the `Google Dev tools` to inspect where the grid was in relation to my objects

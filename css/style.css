@@ -52,60 +52,74 @@ p {
   padding-left: 1.5rem;
 }
 
-img {
-  max-width: 20%;
-}
-
 body {
   font-family: 'Montserrat', sans-serif;
 }
 
-.products {
+main {
+  /* width: 90%; */
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows:minmax(100px, auto);
+  column-gap: 10px;
+  row-gap: 5px;
+}
+
+#title {
+  grid-column: 1 / span 5;
+  grid-row: 1;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
-  text-align: center; /* Center the content within .products */
+  max-height: 10rem;
 }
 
-/* This element will be a grid item, but also a flex container */
-/* .products section {
-  
-  background-color: rgba(211, 187, 176, 0.3);
-  grid-row-start: 2;
-  grid-row-end: 4;
-  grid-column-start: 1;
-  grid-column-end: 3;
-  padding: 2rem;
+#products {
+  grid-row: 2 / 3;
+  grid-column: 2 / span 3;
   display: flex;
-  justify-content: space-between;
+  padding: 4rem;
+  justify-content: space-around;
   align-items: flex-start;
-} */
-
-/* -- product images --*/
-.products img {
-  width: 460px;
-  max-height: 26rem;
-  /*-- aide accessiblity by preventing layout shift
-  by adding a transparent border when a border is
-  added in :hover styles --*/
-  border: 5px solid transparent;
 }
+
+#products img {
+  display: flex;
+  border: 5px solid transparent;
+  max-width: 460px;
+  max-height: 26rem;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+#myChart {
+  grid-row: 5 / 6;
+  grid-column: 2 / span 3;
+  padding: 1rem;
+  align-self: start;
+  align-self: end;
+  max-width: 100%;
+}
+
+
+
 /*-- add hover states so the user can tell what
 behavior is expected of them--*/
-/* .products img:hover {
+#products img:hover {
   border: 5px solid rosybrown;
-  cursor: pointer; */
+  cursor: pointer;
+}
 
 #resultsContainer {
+  grid-row: 4 / span 2;
+  grid-column: 2 / span 3;
   display: flex;
   flex-direction: column-reverse;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  max-height: 30%;
-  max-width: 90%;
-  margin: 0;
-  height: 100vh; /* To center vertically within the viewport */
-  margin: 0 auto; /* Center horizontally within the available width */
+  max-height: 100vh; /* To center vertically within the viewport */
+  margin: 2rem auto; /* Center horizontally within the available width */
 }
 
 /* Lists
@@ -134,13 +148,10 @@ li {
   line-height: 1.6;
 }
 
-/* #myChart {
-  max-width: 80%;
-} */
 
 /* Button
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
-button {
+#showResults {
   background-color: black;
   border: none;
   color: white;
@@ -148,9 +159,14 @@ button {
   transition: 350ms ease;
   font-size: 0.9rem;
   margin-left: 1.5rem;
+  grid-row: 3;
+  grid-column: 2;
+  align-self: start;
+  max-width: 10rem;
 }
 
 button:hover {
   background-color: salmon;
   color: black;
 }
+
