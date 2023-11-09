@@ -60,12 +60,14 @@ main {
   /* width: 90%; */
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 250px 4fr;
-  grid-template-rows: 6.5rem 10rem 20rem 20rem;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows:minmax(100px, auto);
+  column-gap: 10px;
+  row-gap: 5px;
 }
 
 #title {
-  grid-column: 1 / span 4;
+  grid-column: 1 / span 5;
   grid-row: 1;
   display: flex;
   justify-content: center;
@@ -75,25 +77,29 @@ main {
 
 #products {
   grid-row: 2 / 3;
-  grid-column: 1 / span 3;
+  grid-column: 2 / span 3;
   display: flex;
   padding: 4rem;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: flex-start;
 }
 
 #products img {
   display: flex;
   border: 5px solid transparent;
-  width: 460px;
+  max-width: 460px;
   max-height: 26rem;
+  gap: 2rem;
   align-items: flex-start;
 }
 
 #myChart {
-  grid-row: 5;
+  grid-row: 5 / 6;
+  grid-column: 2 / span 3;
   padding: 1rem;
+  align-self: start;
   align-self: end;
+  max-width: 100%;
 }
 
 
@@ -107,7 +113,7 @@ behavior is expected of them--*/
 
 #resultsContainer {
   grid-row: 4 / span 2;
-  grid-column: 2;
+  grid-column: 2 / span 3;
   display: flex;
   flex-direction: column-reverse;
   justify-content: center;
@@ -142,9 +148,6 @@ li {
   line-height: 1.6;
 }
 
-/* #myChart {
-  max-width: 80%;
-} */
 
 /* Button
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
@@ -156,9 +159,10 @@ li {
   transition: 350ms ease;
   font-size: 0.9rem;
   margin-left: 1.5rem;
-  grid-row: 4;
+  grid-row: 3;
+  grid-column: 2;
   align-self: start;
-  /* display: flex; */
+  max-width: 10rem;
 }
 
 button:hover {
