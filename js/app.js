@@ -39,7 +39,7 @@ let leftProductInstance = null;
 let middleProductInstance = null;
 let rightProductInstance = null;
 let clickCount = 0; // running total of votes
-const maxClicks = 5; // max number of votes
+const maxClicks = 25; // max number of votes
 const productStorageKey = 'product-key';
 
 function Product(name, src, views = 0, clicks = 0) {
@@ -70,6 +70,7 @@ function renderProducts() {
     removeVotingListener();
     // show the button which would let you render the results
     endVotingRound();
+    return;
   }
 
   // handle case of leftover
@@ -79,7 +80,7 @@ function renderProducts() {
     leftOver = Product.workingProducts[0];
   }
 
-  if (Product.workingProducts.length < 3) {
+  if (Product.workingProducts.length < 3) { // tests to see if there are enough products to do a round of voting
     Product.workingProducts = Product.allProducts.slice(); // makes copy of all products array; also copies the properties of the array including views and clicks
     // if you don't have enough for the next round, this refreshes
     shuffleArray(Product.workingProducts);
