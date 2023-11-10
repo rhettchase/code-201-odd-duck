@@ -199,7 +199,7 @@ function loadProducts() {
   }
 }
 
-/////// CHARTS ////////////////
+/////// CHARTS ///////////////
 
 function renderChart() {
   let productNames = [];
